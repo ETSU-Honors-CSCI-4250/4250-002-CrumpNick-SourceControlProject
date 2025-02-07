@@ -1,0 +1,39 @@
+name: Code Review Check
+run-name: ${{ github.actor }} is doing a code review check!
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-review-status:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+
+    - name: Check if the pull request has pending reviews
+      id: review-check
+      run: |
+        # Get the PR number
+        PR_NUMBER=$(echo "${{ github.event.pull_request.number }}")
+
+        # Get the list of reviews for the pull request using GitHub API
+        REVIEWS=$(curl -s \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}/reviews")
+
+        # Check if there are any pending reviews
+        PENDING_REVIEW_COUNT=$(echo "$REVIEWS" | jq '[.[] | select(.state=="PENDING")] | length')
+
+        if [ "$PENDING_REVIEW_COUNT" -gt 0 ]; then
+          echo "There are pending reviews."
+          exit 1  # This will fail the job
+        else
+          echo "All reviews are completed."
+        fi
+
+    - name: Continue if reviews are completed
+      if: success()
+      run: echo "Code review completed successfully."
