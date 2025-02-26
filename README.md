@@ -11,8 +11,10 @@ Similarly, for the Selenium test, you are inserting the execution of the Seleniu
 
 
 1.	The solution must include a simple website
+
   a.	The solution must have a button that changes the state of the website
 3.	The solution must include GitHub
+
   a.	The solution must include two code reviews in the process
     i.	The solution must have two different actors that are not the author of the pull request to perform the code reviews
     ii.	The solution must have the code reviews be done sequentially or concurrently
