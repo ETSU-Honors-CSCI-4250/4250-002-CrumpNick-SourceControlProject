@@ -1,0 +1,30 @@
+name: Enforce Two Reviews
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [review_requested, submitted]
+
+jobs:
+  enforce_reviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Approvals
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo, number } = context.issue;
+            const reviews = await github.rest.pulls.listReviews({ owner, repo, pull_number: number });
+            const approvingReviews = new Set();
+
+            reviews.data.forEach(review => {
+              if (review.state === "APPROVED") {
+                approvingReviews.add(review.user.login);
+              }
+            });
+
+            if (approvingReviews.size < 2) {
+              core.setFailed("At least two different reviewers must approve this PR before merging.");
+            }
