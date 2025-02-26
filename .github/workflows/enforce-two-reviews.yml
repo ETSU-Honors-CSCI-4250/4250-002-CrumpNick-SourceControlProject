@@ -16,8 +16,18 @@ jobs:
           REPO=${{ github.repository }}
           API_URL="https://api.github.com/repos/$REPO/pulls/$PR_NUMBER/reviews"
 
-          # Fetch reviews and count unique approvals
-          APPROVALS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" $API_URL | jq '[.[] | select(.state == "APPROVED") | .user.login] | unique | length')
+          # Fetch reviews from GitHub API
+          RESPONSE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" $API_URL)
+
+          # Ensure response is valid JSON
+          if ! echo "$RESPONSE" | jq empty; then
+            echo "Error: Invalid JSON response from GitHub API."
+            echo "Response: $RESPONSE"
+            exit 1
+          fi
+
+          # Extract unique approved reviewers
+          APPROVALS=$(echo "$RESPONSE" | jq '[.[] | select(.state == "APPROVED") | .user.login] | unique | length')
 
           echo "Approvals: $APPROVALS"
 
