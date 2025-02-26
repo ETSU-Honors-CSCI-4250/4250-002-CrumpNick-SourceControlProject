@@ -23,7 +23,7 @@ jobs:
             "username": "GitHub Bot",
             "avatar_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
             "embeds": [{
-              "title": "Pull Request '${STATUS}'",
+              "title": "Pull Request '"$CAPITALIZED_STATUS"'",
               "description": "[#${{ github.event.pull_request.number }}](${{ github.event.pull_request.html_url }}) - **${{ github.event.pull_request.title }}**",
               "color": 3447003,
               "fields": [
