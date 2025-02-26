@@ -1,3 +1,1 @@
-# CSCI-4250_Honors-Project
-
-wafwafwafwafwfa
+# 4250-002-CrumpNick-SourceControlProject
