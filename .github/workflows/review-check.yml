@@ -2,8 +2,6 @@ name: Enforce Two Reviews
 
 on:
   pull_request:
-    branches:
-      - main
     types: [review_requested, submitted]
 
 jobs:
