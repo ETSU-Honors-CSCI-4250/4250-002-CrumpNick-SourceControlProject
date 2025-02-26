@@ -2,27 +2,26 @@ name: Enforce Two Reviews
 
 on:
   pull_request:
-    types: [review_requested, submitted]
+    types: [synchronize, opened, reopened, review_requested, ready_for_review]
 
 jobs:
   enforce_reviews:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Approvals
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo, number } = context.issue;
-            const reviews = await github.rest.pulls.listReviews({ owner, repo, pull_number: number });
-            const approvingReviews = new Set();
+      - name: Check PR approvals
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO=${{ github.repository }}
+          API_URL="https://api.github.com/repos/$REPO/pulls/$PR_NUMBER/reviews"
 
-            reviews.data.forEach(review => {
-              if (review.state === "APPROVED") {
-                approvingReviews.add(review.user.login);
-              }
-            });
+          # Fetch reviews and count unique approvals
+          APPROVALS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" $API_URL | jq '[.[] | select(.state == "APPROVED") | .user.login] | unique | length')
 
-            if (approvingReviews.size < 2) {
-              core.setFailed("At least two different reviewers must approve this PR before merging.");
-            }
+          echo "Approvals: $APPROVALS"
+
+          if [ "$APPROVALS" -lt 2 ]; then
+            echo "At least two unique approvals are required before merging!"
+            exit 1
+          fi
