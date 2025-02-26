@@ -12,15 +12,15 @@ Similarly, for the Selenium test, you are inserting the execution of the Seleniu
 
 1.	The solution must include a simple website
   a.	The solution must have a button that changes the state of the website
-2.	The solution must include GitHub
+3.	The solution must include GitHub
   a.	The solution must include two code reviews in the process
     i.	The solution must have two different actors that are not the author of the pull request to perform the code reviews
     ii.	The solution must have the code reviews be done sequentially or concurrently
     iii.	The solution must reject the code review so that the code is not carried to GitHub
-3.	The solution must incorporate GitHub Actions
+5.	The solution must incorporate GitHub Actions
   a.	The solution must incorporate Discord
     i.	The solution must send out a message to a discord channel once a code review is requested
     ii.	The solution must contain the pull request it corresponds to
-4.	The solution must incorporate Selenium
+7.	The solution must incorporate Selenium
   a.	The solution must integrate a test that checks if the website has a state change if the two code reviews are successful
     i.	The solution must allow for the code to be carried to GitHub if the test succeeds
