@@ -16,7 +16,7 @@ def test_two_buttons():
     s1_button.click()
     bg_color_s1 = driver.execute_script("return window.getComputedStyle(document.body).backgroundColor;")
     s2_button.click()
-    tx_color_s2 = driver.execute_script("return window.return window.getComputedStyle(arguments[0]).color;", h1_element")
+    tx_color_s2 = driver.execute_script("return window.return window.getComputedStyle(arguments[0]).color;", h1_element)
     
     assert bg_color_s1 == "rgb(144, 238, 144)", f"S1 background color mismatch! Found: {bg_color_s1}"
     assert tx_color_s2 == "rgb(255, 0, 0)", f"S2 text color mismatch! Found: {bg_color_s2}"
