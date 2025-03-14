@@ -20,8 +20,8 @@ def test_two_buttons():
     #rgb(144, 238, 144)
     print(bg_color_s1)
     print(tx_color_s2)
-    assert bg_color_s1 == "rgb(0, 0, 0)", f"S1 background color mismatch! Found: {bg_color_s1}"
-    assert tx_color_s2 == "rgb(0, 0, 0)", f"S2 text color mismatch! Found: {bg_color_s2}"
+    assert bg_color_s1 == "rgb(0, 0, 0)"
+    assert tx_color_s2 == "rgb(0, 0, 0)"
 
     teardown(driver)
 
