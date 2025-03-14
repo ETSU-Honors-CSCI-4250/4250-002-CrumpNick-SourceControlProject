@@ -1,7 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 
 def test_two_buttons():
     driver = setup()
@@ -28,9 +26,6 @@ def test_two_buttons():
     teardown(driver)
 
 def setup():
-    options = Options()
-    options.add_argument("--user-data-dir=/tmp/chrome_user_data")
-    options.add_argument("--no-sandbox")
     driver = webdriver.Chrome()
     driver.get("http://localhost:8000")
     return driver
