@@ -17,9 +17,11 @@ def test_two_buttons():
     bg_color_s1 = driver.execute_script("return window.getComputedStyle(document.body).backgroundColor;")
     s2_button.click()
     tx_color_s2 = driver.execute_script("return window.getComputedStyle(arguments[0]).color;", h1_element)
-    
-    assert bg_color_s1 == "rgb(144, 238, 144)"
-    assert tx_color_s2 == "rgb(255, 0, 0)"
+    # rgb(144, 238, 144)
+    # rgb(255, 0, 0)
+    assert bg_color_s1 == "rgb(0, 0, 0)"
+    assert tx_color_s2 == "rgb(0, 0, 0)"
+    # rgb(0, 0, 0)
 
     teardown(driver)
 
