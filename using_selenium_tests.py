@@ -29,6 +29,7 @@ def test_two_buttons():
 
 def setup():
     options = Options()
+    options.add_argument("--user-data-dir=/tmp/chrome_user_data")
     options.add_argument("--no-sandbox")
     driver = webdriver.Chrome()
     driver.get("http://localhost:8000")
