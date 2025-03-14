@@ -32,3 +32,6 @@ def setup():
 
 def teardown(driver):
     driver.quit()
+
+if __name__ == "__main__":
+    test_two_buttons()
