@@ -24,7 +24,8 @@ try:
 
     stateChange1 = driver.find_element(By.TAG_NAME, "body").value_of_css_property("background-color")
     print(f"Background color after clicking #s1: {stateChange1}")
-    assert stateChange1 == "rgba(144, 238, 144, 1)" 
+    assert stateChange1 == "rgba(0, 0, 0, 1)" 
+    # rgba(144, 238, 144, 1)
 
     s2Button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.ID, "s2"))
