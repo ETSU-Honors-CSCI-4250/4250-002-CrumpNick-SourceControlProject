@@ -15,7 +15,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 try:
     driver.get("http://localhost:3000")
-    assert title == "4250 Honors Project"
+    assert "4250 Honors Project" in driver.title
         
     driver.implicitly_wait(0.5)
 
