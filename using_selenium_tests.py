@@ -14,7 +14,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
 try:
-    driver.get("http://localhost:3000")
+    driver.get("http://localhost:3000/simple.html")
     assert "4250 Honors Project" in driver.title
 
     s1Button = WebDriverWait(driver, 10).until(
