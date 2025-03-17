@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Can also use 'windows-latest' or 'macos-latest'
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
