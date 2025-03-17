@@ -1,10 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-def test_two_buttons():
-    driver = setup()
+chrome_options = Options()
+chrome_options.add_argument("--headless")  
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")  
 
-    title = driver.title
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+try:
+    driver.get("http://localhost:3000")
     assert title == "4250 Honors Project"
         
     driver.implicitly_wait(0.5)
@@ -23,15 +33,6 @@ def test_two_buttons():
     assert tx_color_s2 == "rgb(0, 0, 0)"
     # rgb(0, 0, 0)
 
-    teardown(driver)
-
-def setup():
-    driver = webdriver.Chrome()
-    driver.get("http://localhost:8000")
-    return driver
-
-def teardown(driver):
+finally:
     driver.quit()
 
-if __name__ == "__main__":
-    test_two_buttons()
