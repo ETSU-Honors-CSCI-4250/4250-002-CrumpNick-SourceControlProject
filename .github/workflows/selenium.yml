@@ -1,10 +1,8 @@
 name: Selenium Test Workflow
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    types: [opened, closed]
     branches:
       - main
 
