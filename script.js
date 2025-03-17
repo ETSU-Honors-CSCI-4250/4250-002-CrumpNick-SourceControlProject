@@ -5,9 +5,9 @@ s1Button.addEventListener("click", stateChange1);
 s2Button.addEventListener("click", stateChange2);
 
 function stateChange1() {
-    document.body.style.backgroundColor = "rgb(144, 238, 144)";
+    document.body.style.backgroundColor = "rgb(0, 0, 0)";
 }
 
 function stateChange2() {
-    document.body.style.color = "rgb(255, 0, 0)";
+    document.body.style.color = "rgb(0, 0, 0)";
 }
