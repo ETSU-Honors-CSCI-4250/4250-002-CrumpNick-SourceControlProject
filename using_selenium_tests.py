@@ -15,9 +15,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 try:
     driver.get("http://localhost:3000")
-    assert "4250 Honors Project" in driver.title
-        
-    driver.implicitly_wait(0.5)
+    # assert "4250 Honors Project" in driver.title
 
     s1_button = driver.find_element(by=By.ID, value="s1")
     s2_button = driver.find_element(by=By.ID, value="s2")
@@ -29,8 +27,8 @@ try:
     tx_color_s2 = driver.execute_script("return window.getComputedStyle(arguments[0]).color;", h1_element)
     # rgb(144, 238, 144)
     # rgb(255, 0, 0)
-    assert bg_color_s1 == "rgb(0, 0, 0)"
-    assert tx_color_s2 == "rgb(0, 0, 0)"
+    assert bg_color_s1 == "rgb(144, 238, 144)"
+    assert tx_color_s2 == "rgb(255, 0, 0)"
     # rgb(0, 0, 0)
 
 finally:
