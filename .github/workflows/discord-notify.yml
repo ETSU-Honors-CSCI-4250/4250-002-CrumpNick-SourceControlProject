@@ -12,35 +12,41 @@ jobs:
   notify-discord:
     runs-on: ubuntu-latest
     steps:
-      - name: Send Discord Notification
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Count Approvals and Notify
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ACTION_TYPE="${{ github.event_name }}"
-          STATUS="unknown"
-          TITLE=""
-          DESCRIPTION=""
-          COLOR=3447003
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO=${{ github.repository }}
+          REQUIRED_APPROVALS=2
 
-          if [[ "$ACTION_TYPE" == "pull_request" ]]; then
-            STATUS="opened"
-            if [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
-              STATUS="merged"
-            elif [[ "${{ github.event.action }}" == "closed" ]]; then
-              STATUS="closed"
-            fi
+          # Authenticate with GitHub CLI
+          echo $GITHUB_TOKEN | gh auth login --with-token
 
-            CAPITALIZED_STATUS=$(echo "${STATUS}" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')
-            TITLE="Pull Request $CAPITALIZED_STATUS"
-            DESCRIPTION="[#${{ github.event.pull_request.number }}](${{ github.event.pull_request.html_url }}) - **${{ github.event.pull_request.title }}**"
-          elif [[ "$ACTION_TYPE" == "pull_request_review" && "${{ github.event.review.state }}" == "approved" ]]; then
-            TITLE="Code Review Approved"
-            DESCRIPTION="[PR #${{ github.event.pull_request.number }}](${{ github.event.pull_request.html_url }}) - **${{ github.event.pull_request.title }}**\nApproved by **${{ github.event.review.user.login }}**"
-            COLOR=3066993  # Green color for approval
+          # Get all reviews on the PR
+          REVIEWS_JSON=$(gh api repos/$REPO/pulls/$PR_NUMBER/reviews)
+
+          # Extract approved reviewers (last review per user counts)
+          APPROVED_COUNT=$(echo "$REVIEWS_JSON" | jq '[group_by(.user.login)[] | last | select(.state == "APPROVED")] | length')
+
+          if [[ "$APPROVED_COUNT" -ge "$REQUIRED_APPROVALS" ]]; then
+            STATUS_MSG="$APPROVED_COUNT/$REQUIRED_APPROVALS Approvals – Ready to Merge"
+            COLOR=3066993  # Green
           else
-            echo "No action needed."
-            exit 0
+            STATUS_MSG="$APPROVED_COUNT/$REQUIRED_APPROVALS Approvals"
+            COLOR=15105570  # Yellowish
           fi
+
+          TITLE="Code Review Update"
+          DESCRIPTION="[PR #$PR_NUMBER](https://github.com/$REPO/pull/$PR_NUMBER) - **${{ github.event.pull_request.title }}**\n$STATUS_MSG"
 
           curl -H "Content-Type: application/json" -X POST -d '{
             "username": "GitHub Bot",
@@ -50,7 +56,8 @@ jobs:
               "description": "'"$DESCRIPTION"'",
               "color": '"$COLOR"',
               "fields": [
-                { "name": "Repository", "value": "${{ github.repository }}", "inline": true }
+                { "name": "Repository", "value": "'"$REPO"'", "inline": true },
+                { "name": "Reviewed By", "value": "${{ github.event.review.user.login }}", "inline": true }
               ]
             }]
           }' $DISCORD_WEBHOOK
